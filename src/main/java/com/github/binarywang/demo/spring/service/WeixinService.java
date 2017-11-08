@@ -2,6 +2,7 @@ package com.github.binarywang.demo.spring.service;
 
 import javax.annotation.PostConstruct;
 
+import com.github.binarywang.demo.spring.config.WxOtherInfoConfig;
 import me.chanjar.weixin.mp.constant.WxMpEventConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +69,16 @@ public class WeixinService extends WxMpServiceImpl {
   private SubscribeHandler subscribeHandler;
 
   private WxMpMessageRouter router;
+
+  private WxOtherInfoConfig wxOtherInfoConfig;
+
+  public WxOtherInfoConfig getWxOtherInfoConfig() {
+    return wxOtherInfoConfig;
+  }
+
+  public void setWxOtherInfoConfig(WxOtherInfoConfig wxOtherInfoConfig) {
+    this.wxOtherInfoConfig = wxOtherInfoConfig;
+  }
 
   @PostConstruct
   public void init() {

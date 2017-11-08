@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>微信硬件测试</title>
+
+    <style>
+
+        .btn_in {
+            background-color:#343434;
+            color:white;
+            width:90%;
+            height:10rem;
+            font-size:5rem;
+        }
+    </style>
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+
+
+    <script type="text/javascript">
+        window.onload = function () {
+            alert(${appId});
+            wx.config({
+                beta: true,
+                debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                appId: '${appId}', // 必填，公众号的唯一标识
+                timestamp: '${timestamp}', // 必填，生成签名的时间戳
+                nonceStr: '${nonceStr}', // 必填，生成签名的随机串
+                signature: '${signature}',// 必填，签名，见附录1
+                jsApiList: ["onMenuShareTimeline", "configWXDeviceWiFi"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+            });
+        };
+
+        wx.ready(function () { // 页面加载时调用的函数放到ready方法内
+            wx.onMenuShareTimeline({
+                title: '', // 分享标题
+                link: '', // 分享链接
+                imgUrl: '', // 分享图标
+                trigger: function (res) {
+                    alert('用户点击分享到朋友圈');
+                },
+                success: function (res) {
+                    alert('已分享到朋友圈');
+                },
+                cancel: function (res) {
+                    alert('已取消到朋友圈');
+                },
+                fail: function (res) {
+                    alert(JSON.stringify(res));
+                }
+            });
+
+            // wx.invoke('configWXDeviceWiFi');
+
+        });
+    </script>
+
+</head>
+<body>
+
+    <p th:text="'Hello, ' + ${name} + '!'" />
+
+
+    <form id="form1" runat="server">
+        <div>
+            <div align="center">
+                <img style="margin-top:7rem;"; src="http://odaps2f9v.bkt.clouddn.com/17-2-10/85209391-file_1486697604972_fa49.jpg"/>
+            </div>
+            <p style="text-align:center;font-size:50px;">请长按模块上的网络配置按钮</p>
+            <p style="text-align:center;font-size:50px;">待红色LED点亮后继续</p>
+            <div align="center">
+                <button class="btn_in" onclick="wx.invoke('configWXDeviceWiFi')">继续配置</button>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
