@@ -70,15 +70,11 @@ public class WeixinService extends WxMpServiceImpl {
 
   private WxMpMessageRouter router;
 
-  private WxOtherInfoConfig wxOtherInfoConfig;
 
   public WxOtherInfoConfig getWxOtherInfoConfig() {
-    return wxOtherInfoConfig;
+    return WxOtherInfoConfig.getInstance();
   }
 
-  public void setWxOtherInfoConfig(WxOtherInfoConfig wxOtherInfoConfig) {
-    this.wxOtherInfoConfig = wxOtherInfoConfig;
-  }
 
   @PostConstruct
   public void init() {

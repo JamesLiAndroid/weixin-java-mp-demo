@@ -45,11 +45,11 @@ public class WxMpPortalController {
     if (this.getWxService().checkSignature(timestamp, nonce, signature)) {
       this.logger.info("\n返回验证数据为：{}", echostr);
         // 添加内容
-        WxOtherInfoConfig wxOtherInfoConfig = new WxOtherInfoConfig();
+        WxOtherInfoConfig wxOtherInfoConfig = WxOtherInfoConfig.getInstance();
         wxOtherInfoConfig.setNonce(nonce);
         wxOtherInfoConfig.setSignature(signature);
         wxOtherInfoConfig.setTimestamp(timestamp);
-        this.getWxService().setWxOtherInfoConfig(wxOtherInfoConfig);
+        this.logger.info("\n 数据加载完成！");
 
       return echostr;
     }
@@ -78,11 +78,12 @@ public class WxMpPortalController {
     }
 
       // 添加内容
-      WxOtherInfoConfig wxOtherInfoConfig = new WxOtherInfoConfig();
+      WxOtherInfoConfig wxOtherInfoConfig = WxOtherInfoConfig.getInstance();
       wxOtherInfoConfig.setNonce(nonce);
       wxOtherInfoConfig.setSignature(signature);
       wxOtherInfoConfig.setTimestamp(timestamp);
-      this.getWxService().setWxOtherInfoConfig(wxOtherInfoConfig);
+
+
 
     String out = null;
     if (encType == null) {

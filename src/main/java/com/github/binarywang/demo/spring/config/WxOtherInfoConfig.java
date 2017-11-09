@@ -36,4 +36,16 @@ public class WxOtherInfoConfig {
     public void setSignature(String signature) {
         this.signature = signature;
     }
+
+    // 单例模式
+
+    private static WxOtherInfoConfig ourInstance = new WxOtherInfoConfig();
+
+    public static WxOtherInfoConfig getInstance() {
+        return ourInstance;
+    }
+
+    private WxOtherInfoConfig() {
+
+    }
 }

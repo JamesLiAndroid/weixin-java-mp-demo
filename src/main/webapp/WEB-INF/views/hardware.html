@@ -14,56 +14,137 @@
             font-size:5rem;
         }
     </style>
-    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 
 
 
-    <script type="text/javascript">
+
+
+    <script th:inline="javascript">
         window.onload = function () {
-//            alert(${appId});
-            // TODO：怎么把模板里面的参数在js中获取！
+//            console.log("..."+[[${wxJsapiSignature.getAppId()}]]+":"+[[${wxJsapiSignature.getTimestamp()}]]
+//                +":"+[[${wxJsapiSignature.getNonceStr()}]]+":"+[[${wxJsapiSignature.getSignature()}]]+":"+[[${js_ticket}]]);
+
+            console.log([[${access_token}]])
+//            alert("..."+[[${wxJsapiSignature.appId}]]+":"+[[${wxJsapiSignature.timestamp}]]
+//                +":"+[[${wxJsapiSignature.nonceStr}]]+":"+[[${wxJsapiSignature.signature}]]+":"+[[${js_ticket}]]);
+
+//            alert(location.href.split('#')[0]);
+            console.log(location.href.split('#')[0])
+            // 怎么把模板里面的参数在js中获取！
+
+            //"onMenuShareTimeline",
+            // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+            // 必填，公众号的唯一标识
+            // 必填，生成签名的时间戳
+            // 必填，生成签名的随机串
+            // 必填，签名，见附录1
+            // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
             wx.config({
                 beta: true,
-                debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-                appId: "${appId}", // 必填，公众号的唯一标识
-                timestamp: '${timestamp}', // 必填，生成签名的时间戳
-                nonceStr: '${nonceStr}', // 必填，生成签名的随机串
-                signature: '${signature}',// 必填，签名，见附录1
-                jsApiList: ["onMenuShareTimeline", "configWXDeviceWiFi"] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                debug: true,
+                appId: [[${wxJsapiSignature.getAppId()}]],
+                timestamp: [[${wxJsapiSignature.getTimestamp()}]],
+                nonceStr: [[${wxJsapiSignature.getNonceStr()}]],
+                signature: [[${wxJsapiSignature.getSignature()}]],
+                jsApiList: ["configWXDeviceWiFi"]
             });
         };
 
         wx.ready(function () { // 页面加载时调用的函数放到ready方法内
-            wx.onMenuShareTimeline({
-                title: '', // 分享标题
-                link: '', // 分享链接
-                imgUrl: '', // 分享图标
-                trigger: function (res) {
-                    alert('用户点击分享到朋友圈');
-                },
-                success: function (res) {
-                    alert('已分享到朋友圈');
-                },
-                cancel: function (res) {
-                    alert('已取消到朋友圈');
-                },
-                fail: function (res) {
-                    alert(JSON.stringify(res));
-                }
-            });
+//            wx.onMenuShareTimeline({
+//                title: '', // 分享标题
+//                link: '', // 分享链接
+//                imgUrl: '', // 分享图标
+//                trigger: function (res) {
+//                    alert('用户点击分享到朋友圈');
+//                },
+//                success: function (res) {
+//                    alert('已分享到朋友圈');
+//                },
+//                cancel: function (res) {
+//                    alert('已取消到朋友圈');
+//                },
+//                fail: function (res) {
+//                    alert(JSON.stringify(res));
+//                }
+//            });
 
             // wx.invoke('configWXDeviceWiFi');
 
-        });
-    </script>
+//            wx.checkJsApi({
+//                jsApiList: ['configWXDeviceWiFi'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+//                success: function(res) {
+//                    // 以键值对的形式返回，可用的api值true，不可用为false
+//                    // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+//                }
+//            });
 
+            document.getElementsByClassName("btn_in")[0].onclick = function (e) {
+                console.log("调用点击事件！")
+                linkWechatWifi();
+//                e.preventDefault();
+            };
+
+        });
+
+        wx.error(function(res){
+            // config信息验证失败会执行error函数，如签名过期导致验证失败，
+            // 具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，
+            // 对于SPA可以在这里更新签名。
+            alert("data invalidate::" + res);
+        });
+
+        function linkWechatWifi() {
+            wx.invoke('configWXDeviceWiFi', {}, function(res){
+                //alert(res);
+                console.log("res1:"+res);
+                if(res && ('err_msg' in res) ){
+                    if( res['err_msg'] == CANCEL )
+                        onWifiCancel(res);
+                    else if( res['err_msg'] == FAIL )
+                        onWifiFail(res);
+                    else if( res['err_msg'] ==  WIFI_OK)
+                        onWifiOk(res);
+                } else {
+                    alert(res);
+                    console.log("res2:"+res);
+                }
+
+
+            } );
+        }
+
+
+        function onWifiOk(res){
+            alert("Success"+res);
+            try{
+                alert("微信联网成功！");
+//                $(".body_lianwan").show();
+                // 连接成功之后的跳转地址！
+                window.location.href = "http://demo.ngrok.lsyandroid.top/hardsuccess";
+            } catch(e){
+                alert("微信联网成功，请返回！");
+            }
+        }
+
+        function onWifiFail(res){
+            alert("微信联网失败！" + res);
+        }
+
+        function onWifiCancel(res){
+            alert('cancel' + res);
+            window.history.back();
+            if(window.history) window.history.go(-1);
+            window.close();
+        }
+
+    </script>
 </head>
 <body>
 
-    <p th:text="'Hello, ' + ${name} + '!' + ${appId}" />
-
-
-    <form id="form1" runat="server">
+    <!--<form id="form1" runat="server">-->
         <div>
             <div align="center">
                 <img style="margin-top:7rem;"; src="http://odaps2f9v.bkt.clouddn.com/17-2-10/85209391-file_1486697604972_fa49.jpg"/>
@@ -71,9 +152,12 @@
             <p style="text-align:center;font-size:50px;">请长按模块上的网络配置按钮</p>
             <p style="text-align:center;font-size:50px;">待红色LED点亮后继续</p>
             <div align="center">
-                <button class="btn_in" onclick="wx.invoke('configWXDeviceWiFi')">继续配置</button>
+                <button class="btn_in">继续配置</button>
+                <!--onclick="wx.invoke('configWXDeviceWiFi')"-->
             </div>
         </div>
-    </form>
+    <!--</form>-->
+
+
 </body>
 </html>
