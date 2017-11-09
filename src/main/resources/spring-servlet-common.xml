@@ -11,10 +11,22 @@
 	<!-- only scan the Controller class for web context -->
 	<context:component-scan base-package="com.github.binarywang.demo.spring.controller" />
 
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="UTF-8" />
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
 	<mvc:annotation-driven>
 		<mvc:message-converters>
 			<ref bean="jsonConverter" />
 			<ref bean="stringHttpMessageConverter" />
+
+			<!--<bean class="org.springframework.http.converter.StringHttpMessageConverter">-->
+				<!--<constructor-arg value="UTF-8" />-->
+			<!--</bean>-->
 		</mvc:message-converters>
 	</mvc:annotation-driven>
 
