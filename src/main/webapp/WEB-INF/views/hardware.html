@@ -17,10 +17,6 @@
 
     <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 
-
-
-
-
     <script th:inline="javascript">
         window.onload = function () {
 //            console.log("..."+[[${wxJsapiSignature.getAppId()}]]+":"+[[${wxJsapiSignature.getTimestamp()}]]
@@ -43,7 +39,7 @@
             // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
             wx.config({
                 beta: true,
-                debug: true,
+                debug: false,
                 appId: [[${wxJsapiSignature.getAppId()}]],
                 timestamp: [[${wxJsapiSignature.getTimestamp()}]],
                 nonceStr: [[${wxJsapiSignature.getNonceStr()}]],
@@ -101,14 +97,22 @@
                 //alert(res);
                 console.log("res1:"+res);
                 if(res && ('err_msg' in res) ){
-                    if( res['err_msg'] == CANCEL )
-                        onWifiCancel(res);
-                    else if( res['err_msg'] == FAIL )
-                        onWifiFail(res);
-                    else if( res['err_msg'] ==  WIFI_OK)
+                    var err_msg = res.err_msg;
+                    if(err_msg == 'configWXDeviceWiFi:ok') {
+                        //配置成功
                         onWifiOk(res);
+                    } else {
+                        //配置失败
+                        onWifiFail(res);
+                    }
+//                    if( res['err_msg'] == CANCEL )
+//                        onWifiCancel(res);
+//                    else if( res['err_msg'] == FAIL )
+//                        onWifiFail(res);
+//                    else if( res['err_msg'] ==  WIFI_OK)
+//                        onWifiOk(res);
                 } else {
-                    alert(res);
+                   // alert(res);
                     console.log("res2:"+res);
                 }
 
@@ -118,7 +122,7 @@
 
 
         function onWifiOk(res){
-            alert("Success"+res);
+           // alert("Success"+res);
             try{
                 alert("微信联网成功！");
 //                $(".body_lianwan").show();
@@ -130,7 +134,7 @@
         }
 
         function onWifiFail(res){
-            alert("微信联网失败！" + res);
+            alert("设备配网失败！");
         }
 
         function onWifiCancel(res){
